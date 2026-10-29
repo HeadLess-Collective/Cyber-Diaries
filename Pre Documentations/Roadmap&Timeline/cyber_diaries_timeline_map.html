@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>التايم لاين والخريطة الذهنية — مشروع يوميات سايبر (Cyber Diaries)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=IBM+Plex+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-0: #04070d;
+      --bg-1: #08101d;
+      --bg-2: #0c1729;
+      --card-bg: #0b1526;
+      --card-hover: #101e36;
+      --border: rgba(56, 189, 248, 0.18);
+      --border-strong: rgba(56, 189, 248, 0.42);
+      --text: #e6f1ff;
+      --text-soft: #abc0de;
+      --muted: #768dad;
+      --cyan: #38bdf8;
+      --cyan-soft: rgba(56, 189, 248, 0.12);
+      --violet: #a855f7;
+      --violet-soft: rgba(168, 85, 247, 0.12);
+      --emerald: #10b981;
+      --emerald-soft: rgba(16, 185, 129, 0.12);
+      --amber: #f59e0b;
+      --amber-soft: rgba(245, 158, 11, 0.12);
+      --rose: #f43f5e;
+      --rose-soft: rgba(244, 63, 94, 0.12);
+      --radius-xl: 20px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background-color: var(--bg-0);
+      color: var(--text);
+      font-family: "Cairo", system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-0);
+      background-image:
+        radial-gradient(circle at 15% 0%, rgba(56, 189, 248, 0.08), transparent 35%),
+        radial-gradient(circle at 85% 0%, rgba(168, 85, 247, 0.08), transparent 35%),
+        linear-gradient(rgba(56, 189, 248, 0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(56, 189, 248, 0.025) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 42px 42px, 42px 42px;
+      min-height: 100vh;
+      line-height: 1.7;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* Lightweight Topbar (No heavy blur filter) */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      height: 68px;
+      background: #060c17;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      gap: 12px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: var(--cyan-soft);
+      border: 1px solid var(--border-strong);
+      color: var(--cyan);
+      font-family: "IBM Plex Mono", monospace;
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+    .brand-title h1 {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .brand-title p {
+      font-size: 0.76rem;
+      color: var(--muted);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 1px solid var(--border);
+      background: var(--bg-2);
+      color: var(--text-soft);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-family: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+    .btn:hover {
+      border-color: var(--cyan);
+      color: var(--text);
+      background: rgba(56, 189, 248, 0.12);
+    }
+    .btn.active {
+      border-color: var(--cyan);
+      background: rgba(56, 189, 248, 0.22);
+      color: #ffffff;
+    }
+
+    /* Full-width Centered Container (No Sidebar) */
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 28px 20px 64px;
+    }
+
+    /* Compact Hero Header */
+    .hero {
+      background: linear-gradient(145deg, #0b1629, #070e1b);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-xl);
+      padding: 26px 28px;
+      margin-bottom: 28px;
+      text-align: center;
+    }
+    .hero-tag {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 999px;
+      background: var(--cyan-soft);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: var(--cyan);
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .hero h2 {
+      font-size: clamp(1.45rem, 2.5vw, 2.05rem);
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+    .hero p {
+      color: var(--text-soft);
+      font-size: 0.94rem;
+      max-width: 720px;
+      margin: 0 auto 18px;
+    }
+
+    .summary-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 10px;
+      text-align: right;
+    }
+    .stat-box {
+      background: var(--bg-0);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+    }
+    .stat-box span {
+      display: block;
+      font-size: 0.73rem;
+      color: var(--muted);
+    }
+    .stat-box strong {
+      font-size: 0.92rem;
+      color: var(--text);
+    }
+
+    .mono {
+      font-family: "IBM Plex Mono", monospace;
+      direction: ltr;
+      unicode-bidi: embed;
+      display: inline-block;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+    .badge.cyan { background: var(--cyan-soft); color: #7dd3fc; border-color: rgba(56, 189, 248, 0.35); }
+    .badge.violet { background: var(--violet-soft); color: #d8b4fe; border-color: rgba(168, 85, 247, 0.35); }
+    .badge.emerald { background: var(--emerald-soft); color: #6ee7b7; border-color: rgba(16, 185, 129, 0.35); }
+    .badge.amber { background: var(--amber-soft); color: #fcd34d; border-color: rgba(245, 158, 11, 0.4); }
+    .badge.rose { background: var(--rose-soft); color: #fda4af; border-color: rgba(244, 63, 94, 0.4); }
+
+    /* =====================================================================
+       MODE 1: SEQUENTIAL DOWNWARD TIMELINE WITH MIND-MAP BRANCHES
+       ===================================================================== */
+    .timeline-flow {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Vertical Spine Line running down the center */
+    .timeline-flow::before {
+      content: "";
+      position: absolute;
+      top: 24px;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 3px;
+      background: linear-gradient(
+        180deg,
+        var(--emerald) 0%,
+        var(--cyan) 30%,
+        var(--violet) 60%,
+        var(--amber) 85%,
+        var(--emerald) 100%
+      );
+      z-index: 0;
+    }
+
+    /* Step Node Block */
+    .tl-node {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 860px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      transition: border-color 0.15s ease, background-color 0.15s ease;
+    }
+    .tl-node:hover {
+      border-color: var(--border-strong);
+      background: var(--card-hover);
+    }
+
+    /* Node Variants */
+    .tl-node.anchor-node {
+      max-width: 560px;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.14), #091526);
+      border-color: rgba(16, 185, 129, 0.5);
+    }
+    .tl-node.gate-node {
+      max-width: 620px;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), #141218);
+      border-color: rgba(245, 158, 11, 0.55);
+      border-radius: 999px;
+      padding: 12px 26px;
+    }
+    .tl-node.qa-node {
+      background: linear-gradient(135deg, rgba(244, 63, 94, 0.13), #0c1526);
+      border-color: rgba(244, 63, 94, 0.45);
+    }
+
+    /* Downward Connector Arrow between steps */
+    .tl-connector {
+      position: relative;
+      z-index: 1;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tl-connector span {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--bg-0);
+      border: 2px solid var(--cyan);
+      color: var(--cyan);
+      font-size: 0.8rem;
+      display: grid;
+      place-items: center;
+      line-height: 1;
+    }
+    .tl-connector.gate-conn span {
+      border-color: var(--amber);
+      color: var(--amber);
+    }
+
+    /* Node Header */
+    .tl-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+    .tl-title {
+      font-size: 1.08rem;
+      font-weight: 800;
+      color: var(--text);
+    }
+    .tl-idea {
+      font-size: 0.88rem;
+      color: var(--text-soft);
+      margin-bottom: 12px;
+    }
+
+    /* Mind-Map Branches inside each Timeline Step */
+    .mind-branches {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 10px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(56, 189, 248, 0.22);
+    }
+    .mind-branches.hidden {
+      display: none;
+    }
+
+    .branch-pill {
+      position: relative;
+      background: var(--bg-0);
+      border: 1px solid rgba(168, 85, 247, 0.3);
+      border-radius: var(--radius-md);
+      padding: 9px 12px;
+      font-size: 0.82rem;
+    }
+    .branch-pill::before {
+      content: "◆";
+      color: var(--violet);
+      font-size: 0.7rem;
+      margin-left: 6px;
+    }
+    .branch-pill strong {
+      color: var(--text);
+      font-weight: 700;
+      display: inline;
+    }
+    .branch-pill p {
+      color: var(--muted);
+      font-size: 0.76rem;
+      margin-top: 3px;
+    }
+
+    /* Handoff Footer tag inside each card */
+    .handoff-tag {
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.76rem;
+      color: var(--cyan);
+      background: rgba(56, 189, 248, 0.08);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      padding: 3px 10px;
+      border-radius: 8px;
+    }
+
+    /* =====================================================================
+       MODE 2: HORIZONTAL / TREE MIND-MAP OVERVIEW
+       ===================================================================== */
+    .mindmap-overview {
+      display: none;
+      margin-bottom: 28px;
+      background: var(--card-bg);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-xl);
+      padding: 24px 20px;
+    }
+    .mindmap-overview.active {
+      display: block;
+    }
+
+    .mm-root {
+      text-align: center;
+      max-width: 460px;
+      margin: 0 auto 24px;
+      padding: 14px 20px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(168, 85, 247, 0.2));
+      border: 2px solid var(--cyan);
+      font-weight: 900;
+      font-size: 1.05rem;
+    }
+
+    .mm-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 14px;
+    }
+    .mm-card {
+      background: var(--bg-0);
+      border: 1px solid var(--border);
+      border-right: 4px solid var(--cyan);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+    }
+    .mm-card.gate {
+      border-right-color: var(--amber);
+    }
+    .mm-card.qa {
+      border-right-color: var(--rose);
+    }
+    .mm-card h4 {
+      font-size: 0.94rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .mm-card ul {
+      padding-right: 16px;
+      font-size: 0.8rem;
+      color: var(--text-soft);
+      margin-top: 6px;
+    }
+
+    /* Compact Releases Strip */
+    .releases-strip {
+      margin-top: 32px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 20px 22px;
+    }
+    .releases-strip h3 {
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: var(--cyan);
+    }
+    .releases-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+    }
+    .rel-box {
+      background: var(--bg-0);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+    }
+    .rel-box h4 {
+      font-size: 0.9rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .rel-box p {
+      font-size: 0.8rem;
+      color: var(--text-soft);
+    }
+
+    /* Footer with Required Attribution */
+    .footer {
+      margin-top: 40px;
+      padding: 24px 18px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      background: #060b14;
+      border-radius: var(--radius-lg);
+    }
+    .footer .prepared-by {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .footer .prepared-by span {
+      color: var(--cyan);
+    }
+    .footer .sub-foot {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* Back to Top */
+    .to-top {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: var(--bg-2);
+      color: var(--cyan);
+      font-size: 1rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    @media (max-width: 640px) {
+      .topbar {
+        height: auto;
+        padding: 12px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .tl-node.gate-node {
+        border-radius: var(--radius-lg);
+      }
+    }
+
+    @media print {
+      .topbar, .to-top {
+        display: none !important;
+      }
+      body {
+        background: #04070d !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Simple Sticky Topbar (No Sidebar) -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-badge">CD</div>
+      <div class="brand-title">
+        <h1>التايم لاين والخريطة الذهنية — مشروع يوميات سايبر (Cyber Diaries)</h1>
+        <p><span class="mono">CDbHLT-REQ-SPEC-001</span> · جامعة أسيوط التكنولوجية الدولية (<span class="mono">EGC TECH AITU</span>)</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button type="button" class="btn active" id="viewTimelineBtn">⬇ المسار المتتابع (Timeline)</button>
+      <button type="button" class="btn" id="viewMindmapBtn">🕸️ الخريطة الذهنية (Mind-Map)</button>
+      <button type="button" class="btn" id="toggleBranchesBtn">طيّ / فرد الفروع</button>
+      <button type="button" class="btn" id="printRoadmapBtn">طباعة / PDF</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero Summary -->
+    <section class="hero">
+      <span class="hero-tag">PROJECT TIMELINE &amp; MIND-MAP · SABER EDITION</span>
+      <h2>خارطة الطريق والجدول الزمني المبسّط — يوميات سايبر</h2>
+      <p>
+        مسار متتابع يوضّح كل خطوة زمنية من <strong>أكتوبر 2026</strong> حتى المناقشة النهائية في <strong>يوليو 2027</strong>، وكيف تسلّم كل مرحلة مخرجاتها للمرحلة التي تليها عبر بوابات المراجعة المعتمدة.
+      </p>
+      <div class="summary-strip">
+        <div class="stat-box">
+          <span>نقطة الانطلاق</span>
+          <strong class="mono">26-10-2026</strong>
+        </div>
+        <div class="stat-box">
+          <span>التسليم والمناقشة</span>
+          <strong class="mono">07-2027 (يوليو 2027)</strong>
+        </div>
+        <div class="stat-box">
+          <span>الفئة التجريبية الأولى</span>
+          <strong class="mono">A05:2025 Injection</strong>
+        </div>
+        <div class="stat-box">
+          <span>قوام الفريق</span>
+          <strong>13 عضوًا (4 فرق)</strong>
+        </div>
+        <div class="stat-box">
+          <span>إشراف أكاديمي</span>
+          <strong>د/ أحمد زكريا · د/ هشام عبدالنبي</strong>
+        </div>
+      </div>
+    </section>
+
+    <!-- View 2: Compact Mind-Map Overview (Toggled via topbar button) -->
+    <section class="mindmap-overview" id="mindmapSection">
+      <div class="mm-root">
+        🎯 مشروع يوميات سايبر (Cyber Diaries)<br />
+        <span style="font-size:0.8rem;font-weight:600;color:var(--text-soft);">من 26-10-2026 إلى 07-2027 · 8 مراحل + نافذة تثبيت + 5 بوابات</span>
+      </div>
+      <div class="mm-grid">
+        <div class="mm-card">
+          <h4><span>1. التحليل وتصميم التجربة</span> <span class="badge cyan">أكتوبر 2026</span></h4>
+          <ul>
+            <li>إصدار مواصفة المتطلبات <span class="mono">SRS v0.1</span> ورحلة المستخدم</li>
+            <li>حسم الاستضافة مبكرًا (<span class="mono">OI-007</span>) وتثبيت العضو الـ 13 (<span class="mono">OI-013</span>)</li>
+            <li><strong>Gate 01:</strong> توقيع القيود الخمسة (<span class="mono">CN-015..019</span>)</li>
+          </ul>
+        </div>
+        <div class="mm-card">
+          <h4><span>2. المحتوى والقصة والأخلاقيات</span> <span class="badge violet">نوفمبر 2026</span></h4>
+          <ul>
+            <li>تسليم سيناريو <span class="mono">SQL Injection</span> بصيغة <span class="mono">JSON/MD</span> خام</li>
+            <li>كتابة الشرح والمشاهد ومرجع العالم (<span class="mono">World Bible</span>)</li>
+            <li>تقديم ملف الأخلاقيات والموافقة للجامعة مبكرًا (<span class="mono">OI-001/004</span>)</li>
+          </ul>
+        </div>
+        <div class="mm-card">
+          <h4><span>3. الهيكل الأساسي وعقود API</span> <span class="badge cyan">ديسمبر 2026</span></h4>
+          <ul>
+            <li>تجميد عقود <span class="mono">Swagger/OpenAPI</span> في الأسبوع الأول (<span class="mono">API-First</span>)</li>
+            <li>بناء الخلفية <span class="mono">.NET 10 Modular Monolith</span> وقاعدة <span class="mono">PostgreSQL 16</span></li>
+            <li>بناء الواجهة <span class="mono">Next.js 14</span> بدعم <span class="mono">RTL</span> ولوحة المسارين</li>
+          </ul>
+        </div>
+        <div class="mm-card">
+          <h4><span>4. التجارب الحرجة وعزل المعمل</span> <span class="badge amber">يناير 2027</span></h4>
+          <ul>
+            <li>فصل خدمة المعمل بـ <span class="mono">Docker</span> وعامل التنظيف الآلي (<span class="mono">Reaper</span>)</li>
+            <li>دمج الأدوات الحقيقية (<span class="mono">ttyd, Monaco, Adminer, curl</span>)</li>
+            <li><strong>Gate 02:</strong> اجتياز اختبار العزل (<span class="mono">IM-006</span>) أو تفعيل <span class="mono">Plan B</span></li>
+          </ul>
+        </div>
+        <div class="mm-card">
+          <h4><span>5. النموذج التجريبي (v0.1 Pilot)</span> <span class="badge emerald">فبراير 2027</span></h4>
+          <ul>
+            <li>تكامل حلقة <span class="mono">Injection</span> بالأدوار الـ 3 (<span class="mono">Red / Blue / Dev</span>)</li>
+            <li>تشغيل التحقق الآلي الخادمي ومحرر اليوميات</li>
+            <li>توثيق الساعات الفعلية للمكونات الـ 4 كشرط اكتمال (<span class="mono">DoD</span>)</li>
+          </ul>
+        </div>
+        <div class="mm-card">
+          <h4><span>6. القياس مع المستخدمين</span> <span class="badge violet">مارس 2027</span></h4>
+          <ul>
+            <li><strong>Gate 03:</strong> تفعيل موافقة الأخلاقيات (أو <span class="mono">Dogfooding</span> داخلي)</li>
+            <li>تجربة 5–10 طلاب وقياس زمن الإتمام ومقياس <span class="mono">SUS</span></li>
+            <li><strong>Gate 04:</strong> حساب الكلفة وإعلان عدد الفئات مع المشرفين</li>
+          </ul>
+        </div>
+        <div class="mm-card">
+          <h4><span>7. التعميم المشروط (v0.2 Scale)</span> <span class="badge cyan">أبريل – منتصف مايو 2027</span></h4>
+          <ul>
+            <li>إضافة الفئات الجديدة المقررة عبر لوحة <span class="mono">Admin CMS</span> بلا كود</li>
+            <li>إعادة استخدام قالب حاويات المعمل بوفر 30%–40%</li>
+            <li>أو التحول لتدعيم حلقة الحقن إذا ظهرت عيوب حرجة بالمرحلة 6</li>
+          </ul>
+        </div>
+        <div class="mm-card qa">
+          <h4><span>8. نافذة التثبيت وضمان الجودة</span> <span class="badge rose">أواخر مايو 2027 (أسبوعان)</span></h4>
+          <ul>
+            <li>تجميد كودي تام (<span class="mono">Code Freeze</span>) وحظر أي ميزات جديدة</li>
+            <li>إصلاح العلل وضبط الأداء (<span class="mono">&lt;500ms API / &lt;90s Lab</span>)</li>
+            <li>اختبار تزامن 10 متعلمين واستكمال مسودات الأدلة الأربعة</li>
+          </ul>
+        </div>
+        <div class="mm-card gate">
+          <h4><span>9. التوثيق والدراسة والمناقشة (v1.0)</span> <span class="badge emerald">يونيو – يوليو 2027</span></h4>
+          <ul>
+            <li>الدراسة التقييمية الموسعة (<span class="mono">n ≥ 10</span>) ولوحة الصدارة الاختيارية</li>
+            <li><strong>Gate 05:</strong> تجميد القوالب قبل التسليم بأسبوعين (منتصف يونيو)</li>
+            <li>إصدار الأدلة الأربعة والورقة البحثية والمناقشة في <span class="mono">07-2027</span></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- View 1: Sequential Downward Timeline (Default View) -->
+    <section class="timeline-flow" id="timelineSection">
+
+      <!-- START ANCHOR -->
+      <article class="tl-node anchor-node">
+        <span class="badge emerald mono">START · 26-10-2026</span>
+        <div class="tl-title" style="margin-top:6px;">نقطة الانطلاق: اعتماد مواصفة المتطلبات (SRS v0.1)</div>
+        <p class="tl-idea" style="margin-bottom:0;">
+          إرساء وثيقة المتطلبات المرجعية وتوزيع الـ 13 عضوًا على 4 فرق تخصصية (المحتوى · الخلفية · الواجهة · المعامل).
+        </p>
+      </article>
+
+      <div class="tl-connector"><span>↓</span></div>
+
+      <!-- PHASE 1 -->
+      <article class="tl-node">
+        <div class="tl-head">
+          <div class="tl-title">المرحلة 01: التحليل وتصميم التجربة وحسم البيئة</div>
+          <span class="badge cyan">أكتوبر 2026 (4 أسابيع)</span>
+        </div>
+        <p class="tl-idea">
+          تثبيت رحلة المتعلم والمسارين (التعلّم واللابات) وحسم بيئة الاستضافة من الشهر الأول قبل كتابة الكود.
+        </p>
+        <div class="mind-branches">
+          <div class="branch-pill">
+            <strong>رحلة المستخدم والمساران</strong>
+            <p>تصميم لوحة البداية والمسار الكامل والمبسط (<span class="mono">D8</span>).</p>
+          </div>
+          <div class="branch-pill">
+            <strong>حسم الاستضافة (<span class="mono">OI-007</span>)</strong>
+            <p>اختيار Oracle Free أو Render أو سيرفر الجامعة وتثبيت حدود الذاكرة.</p>
+          </div>
+          <div class="branch-pill">
+            <strong>تثبيت الفريق (<span class="mono">OI-013</span>)</strong>
+            <p>إغلاق التفاوت العددي وتسكين العضو الـ 13 رسميًا.</p>
+          </div>
+          <div class="branch-pill">
+            <strong>التوثيق التراكمي (1)</strong>
+            <p>البدء في خطة التوثيق وهيكل التقرير الأكاديمي.</p>
+          </div>
+        </div>
+        <div class="handoff-tag">📤 تسلّم إلى: بوابة المراجعة الأولى (Gate 01)</div>
+      </article>
+
+      <div class="tl-connector gate-conn"><span>↓</span></div>
+
+      <!-- GATE 01 -->
+      <article class="tl-node gate-node">
+        <span class="badge amber mono">GATE 01 · نهاية أكتوبر 2026</span>
+        <div class="tl-title" style="margin-top:4px;">بوابة إقرار النطاق وتوقيع القيود الحاكمة (<span class="mono">CN-015..019</span>)</div>
+        <p class="tl-idea" style="margin-bottom:0;">
+          اعتماد المشرفين لمواصفة <span class="mono">v0.1 SRS</span> وتثبيت الاستضافة قبل الانتقال لكتابة المحتوى.
+        </p>
+      </article>
+
+      <div class="tl-connector"><span>↓</span></div>
+
+      <!-- PHASE 2 -->
+      <article class="tl-node">
+        <div class="tl-head">
+          <div class="tl-title">المرحلة 02: تصميم المحتوى والقصة + التقديم الأخلاقي المبكر</div>
+          <span class="badge violet">نوفمبر 2026 (4 أسابيع)</span>
+        </div>
+        <p class="tl-idea">
+          إنتاج محتوى وسيناريو حلقة <span class="mono">SQL Injection</span> بصيغة مهيكلة خام، وتقديم ملف الأخلاقيات مبكرًا لتفادي بطء الموافقات.
+        </p>
+        <div class="mind-branches">
+          <div class="branch-pill">
+            <strong>سيناريو خام (<span class="mono">JSON/MD</span>)</strong>
+            <p>تسليم سيناريو الحقن الموحد للأدوار الـ 3 لبناء الـ CMS على بيانات حقيقية.</p>
+          </div>
+          <div class="branch-pill">
+            <strong>الشرح والمشاهد (<span class="mono">World Bible</span>)</strong>
+            <p>كتابة الشرح بأركانه الـ 5، مشهد ما قبل التوظيف، وافتتاحية «نور تك».</p>
+          </div>
+          <div class="branch-pill">
+            <strong>تقديم الأخلاقيات (<span class="mono">OI-001/004</span>)</strong>
+            <p>إيداع بروتوكول الدراسة والموافقة المستنيرة للكلية في نوفمبر.</p>
+          </div>
+          <div class="branch-pill">
+            <strong>التوثيق التراكمي (2)</strong>
+            <p>كتابة مسودة مراجعة الأدبيات (<span class="mono">Literature Review</span>).</p>
+          </div>
+        </div>
+        <div class="handoff-tag">📤 تسلّم إلى: المرحلة 03 (الهيكل الأساسي وعقود API)</div>
+      </article>
+
+      <div class="tl-connector"><span>↓</span></div>
+
+      <!-- PHASE 3 -->
+      <article class="tl-node">
+        <div class="tl-head">
+          <div class="tl-title">المرحلة 03: التصميم الهندسي والهيكل الأساسي (<span class="mono">API-First</span>)</div>
+          <span class="badge cyan">ديسمبر 2026 (4 أسابيع)</span>
+        </div>
+        <p class="tl-idea">
+          تجميد عقود الـ API في الأسبوع الأول ليعمل فريقا الواجهة والخلفية بالتوازي دون انتظار.
+        </p>
+        <div class="mind-branches">
+          <div class="branch-pill">
+            <strong>عقود <span class="mono">Swagger</span> و<span class="mono">Mock Servers</span></strong>
+            <p>تثبيت عقود <span class="mono">REST/JSON</span> بالأسبوع الأول (<span class="mono">CN-018</span>).</p>
+          </div>
+          <div class="branch-pill">
+            <strong>خلفية <span class="mono">.NET 10 Monolith</span></strong>
+            <p>بناء الوحدات الـ 7 وقاعدة <span class="mono">PostgreSQL 16</span> وتشفير كلمات المرور.</p>
+          </div>
+          <div class="branch-pill">
+            <strong>واجهة <span class="mono">Next.js 14 (RTL)</span></strong>
+            <p>بناء الصفحة الرئيسية، الدخول، ولوحة البداية بالمسارين.</p>
+          </div>
+          <div class="branch-pill">
+            <strong>حسم سياسات الحساب</strong>
+            <p>إغلاق قواعد كلمات المرور وحذف الحساب (<span class="mono">OI-009..011</span>).</p>
+          </div>
+        </div>
+        <div class="handoff-tag">📤 تسلّم إلى: المرحلة 04 (التجارب التقنية الحرجة وعزل المعامل)</div>
+      </article>
+
+      <div class="tl-connector"><span>↓</span></div>
+
+      <!-- PHASE 4 -->
+      <article class="tl-node">
+        <div class="tl-head">
+          <div class="tl-title">المرحلة 04: التجارب التقنية الحرجة وعزل المعامل (<span class="mono">The Showstopper</span>)</div>
+          <span class="badge amber">يناير 2027 (4 أسابيع)</span>
+        </div>
+        <p class="tl-idea">
+          بناء خدمة المعامل المعزولة بـ Docker وربط أدوات المتصفح والتحقق الآلي، مع تأمين خطة بديلة (<span class="mono">Plan B</span>).
+        </p>
+        <div class="mind-branches">
+          <div class="branch-pill">
+            <strong>عزل Docker وعامل التنظيف</strong>
+            <p>فصل خدمة المعمل (<span class="mono">CN-002</span>) وتدمير الحاويات بعد 60–120 د (<span class="mono">Reaper</span>).</p>
+          </div>
+          <div class="branch-pill">
+            <strong>دمج الأدوات الحقيقية</strong>
+            <p>تشغيل <span class="mono">ttyd, Monaco, Adminer, curl</span> داخل المتصفح (<span class="mono">OI-008</span>).</p>
+          </div>
+          <div class="branch-pill">
+            <strong>محرك التحقق الخادمي</strong>
+            <p>فحص نتائج المهام في الخادم خلال <span class="mono">&lt; 3s</span> (<span class="mono">CN-005</span>).</p>
+          </div>
+          <div class="branch-pill">
+            <strong>خطة <span class="mono">Plan B</span> + المرجع التقني</strong>
+            <p>بديل سحابي جاهز منتصف يناير إذا تعثر Docker + مسودة المرجع التقني.</p>
+          </div>
+        </div>
+        <div class="handoff-tag">📤 تسلّم إلى: بوابة العزل الأمني (Gate 02)</div>
+      </article>
+
+      <div class="tl-connector gate-conn"><span>↓</span></div>
+
+      <!-- GATE 02 -->
+      <article class="tl-node gate-node">
+        <span class="badge amber mono">GATE 02 · نهاية يناير 2027</span>
+        <div class="tl-title" style="margin-top:4px;">بوابة العزل الأمني واجتياز اختبار إساءة الاستخدام (<span class="mono">IM-006</span>)</div>
+        <p class="tl-idea" style="margin-bottom:0;">
+          إثبات عدم إمكانية الخروج من الحاوية للشبكة الخارجية، وتجهيز الحاوية في أقل من 90 ثانية بحد <span class="mono">2GB RAM</span>.
+        </p>
+      </article>
+
+      <div class="tl-connector"><span>↓</span></div>
+
+      <!-- PHASE 5 -->
+      <article class="tl-node">
+        <div class="tl-head">
+          <div class="tl-title">المرحلة 05: النموذج التجريبي الكامل (<span class="mono">v0.1 Pilot — Injection</span>)</div>
+          <span class="badge emerald">فبراير 2027 (4 أسابيع)</span>
+        </div>
+        <p class="tl-idea">
+          ربط الحلقة الأولى كاملة من المشهد التمهيدي حتى اليوميات، وتسجيل الساعات الفعلية كشرط اكتمال إلزامي (<span class="mono">DoD</span>).
+        </p>
+        <div class="mind-branches">
+          <div class="branch-pill">
+            <strong>الأدوار الـ 3 في معمل واحد</strong>
+            <p>مهمة <span class="mono">Red Team</span> (اكتشاف) + <span class="mono">Blue Team</span> (تحقيق) + <span class="mono">Developer</span> (إصلاح).</p>
+          </div>
+          <div class="branch-pill">
+            <strong>اليوميات ونظام النقاط</strong>
+            <p>تشغيل الأسئلة الأربعة لليوميات واحتساب النقاط خادميًا فقط.</p>
+          </div>
+          <div class="branch-pill">
+            <strong>فحص جودة <span class="mono">Blue Team</span></strong>
+            <p>اختبار سلسلة الاستنتاج مع طالب خارجي لمنع الحل بالحفظ (<span class="mono">BR-15</span>).</p>
+          </div>
+          <div class="branch-pill">
+            <strong>شرط الاكتمال (<span class="mono">DoD — CN-019</span>)</strong>
+            <p>تدوين الساعات الفعلية للمحتوى والمشاهد والمعمل والاختبارات.</p>
+          </div>
+        </div>
+        <div class="handoff-tag">📤 تسلّم إلى: بوابة الأخلاقيات (Gate 03) والمرحلة 06</div>
+      </article>
+
+      <div class="tl-connector gate-conn"><span>↓</span></div>
+
+      <!-- GATE 03 -->
+      <article class="tl-node gate-node">
+        <span class="badge amber mono">GATE 03 · مطلع مارس 2027</span>
+        <div class="tl-title" style="margin-top:4px;">بوابة اعتماد الأخلاقيات (<span class="mono">PV-001</span>) أو تفعيل بديل الطوارئ الداخلي</div>
+        <p class="tl-idea" style="margin-bottom:0;">
+          استلام موافقة اللجنة (المقدمة في نوفمبر)؛ وعند أي تأخر إداري يُفعّل التقييم الداخلي (<span class="mono">Dogfooding</span>) فورًا دون إيقاف الجدول.
+        </p>
+      </article>
+
+      <div class="tl-connector"><span>↓</span></div>
+
+      <!-- PHASE 6 -->
+      <article class="tl-node">
+        <div class="tl-head">
+          <div class="tl-title">المرحلة 06: القياس الميداني مع المستخدمين (<span class="mono">5–10 طلاب</span>)</div>
+          <span class="badge violet">مارس 2027 (4 أسابيع)</span>
+        </div>
+        <p class="tl-idea">
+          اختبار حلقة الحقن ميدانيًا لقياس سهولة الاستخدام وزمن الإتمام وتحديد هل نتوسع لفئات جديدة أم نرسّخ الحلقة الأولى.
+        </p>
+        <div class="mind-branches">
+          <div class="branch-pill">
+            <strong>التجربة الاستطلاعية</strong>
+            <p>مشاركة 5–10 طلاب ورصد زمن الإتمام ومعدلات الخطأ والتلميحات.</p>
+          </div>
+          <div class="branch-pill">
+            <strong>قياس <span class="mono">SUS</span> والشاشات</strong>
+            <p>حساب درجة قابلية الاستخدام (<span class="mono">OI-015</span>) وتثبيت دقات الشاشة (<span class="mono">OI-002</span>).</p>
+          </div>
+          <div class="branch-pill">
+            <strong>التوثيق التراكمي (3)</strong>
+            <p>كتابة مسودة دليل المستخدم (<span class="mono">User Manual</span>) من ملاحظات الطلاب.</p>
+          </div>
+        </div>
+        <div class="handoff-tag">📤 تسلّم إلى: بوابة حساب الكلفة وإعلان النطاق (Gate 04)</div>
+      </article>
+
+      <div class="tl-connector gate-conn"><span>↓</span></div>
+
+      <!-- GATE 04 -->
+      <article class="tl-node gate-node">
+        <span class="badge amber mono">GATE 04 · نهاية مارس 2027</span>
+        <div class="tl-title" style="margin-top:4px;">بوابة حساب الكلفة وإعلان النطاق المشروط مع المشرفين (<span class="mono">CN-015 &amp; CN-019</span>)</div>
+        <p class="tl-idea" style="margin-bottom:0;">
+          قرار مشترك: التعميم لإضافة فئات جديدة إذا كانت الساعات ونتائج المرحلة 6 إيجابية، أو التفرغ لترسيخ حلقة الحقن عند وجود عيوب حرجة.
+        </p>
+      </article>
+
+      <div class="tl-connector"><span>↓</span></div>
+
+      <!-- PHASE 7 -->
+      <article class="tl-node">
+        <div class="tl-head">
+          <div class="tl-title">المرحلة 07: التعميم المشروط وتوسيع الفئات (<span class="mono">v0.2 Scale</span>)</div>
+          <span class="badge cyan">أبريل – منتصف مايو 2027 (6 أسابيع)</span>
+        </div>
+        <p class="tl-idea">
+          تعميم القالب على الفئات الإضافية المعتمدة عبر لوحة الإدارة (<span class="mono">CMS</span>) دون تعديل في الكود الأساسي وبوفر 30%–40% من الوقت.
+        </p>
+        <div class="mind-branches">
+          <div class="branch-pill">
+            <strong>إدخال الفئات عبر <span class="mono">CMS</span></strong>
+            <p>إضافة الدروس والمشاهد والأسئلة الجديدة دون لمس الكود (<span class="mono">CN-009</span>).</p>
+          </div>
+          <div class="branch-pill">
+            <strong>إعادة استخدام قالب المعمل</strong>
+            <p>تجهيز حاويات الفئات المضافة على نفس قالب فئة الحقن (<span class="mono">SE-001</span>).</p>
+          </div>
+          <div class="branch-pill">
+            <strong>إطلاق الإصدار <span class="mono">v0.2</span></strong>
+            <p>التحقق من عمل الفئات المتعددة واستقرار بيانات تقدم المتعلمين.</p>
+          </div>
+        </div>
+        <div class="handoff-tag">📤 تسلّم إلى: نافذة التثبيت وضمان الجودة (Late May QA Buffer)</div>
+      </article>
+
+      <div class="tl-connector"><span>↓</span></div>
+
+      <!-- STABILIZATION & QA BUFFER -->
+      <article class="tl-node qa-node">
+        <div class="tl-head">
+          <div class="tl-title">محطة التحصين: نافذة التثبيت وضمان الجودة (<span class="mono">Code Freeze &amp; QA</span>)</div>
+          <span class="badge rose">النصف الثاني من مايو 2027 (أسبوعان)</span>
+        </div>
+        <p class="tl-idea">
+          تجميد برمجي كامل يمنع إضافة أي ميزة جديدة، والتفرغ لإصلاح العلل واختبارات الأداء قبل شهر التوثيق النهائي.
+        </p>
+        <div class="mind-branches">
+          <div class="branch-pill">
+            <strong>تجميد الكود (<span class="mono">Code Freeze</span>)</strong>
+            <p>حظر إضافة أي فئات أو ميزات جديدة ومعالجة كافة الأخطاء (<span class="mono">Bug Bash</span>).</p>
+          </div>
+          <div class="branch-pill">
+            <strong>ضبط الأداء والتزامن</strong>
+            <p>تحقيق <span class="mono">&lt;500ms API</span> و<span class="mono">&lt;90s</span> للمعمل مع 10 متعلمين متزامنين.</p>
+          </div>
+          <div class="branch-pill">
+            <strong>تدقيق مسودات الأدلة</strong>
+            <p>تجهيز مسودات الأدلة الأربعة لتسليمها للتحرير النهائي في يونيو.</p>
+          </div>
+        </div>
+        <div class="handoff-tag">📤 تسلّم إلى: المرحلة 08 (الدراسة الموسعة والتوثيق النهائي)</div>
+      </article>
+
+      <div class="tl-connector"><span>↓</span></div>
+
+      <!-- PHASE 8 -->
+      <article class="tl-node">
+        <div class="tl-head">
+          <div class="tl-title">المرحلة 08: التحليلات والدراسة الموسعة والتوثيق النهائي</div>
+          <span class="badge emerald">يونيو 2027 (4 أسابيع)</span>
+        </div>
+        <p class="tl-idea">
+          تنفيذ الدراسة التقييمية النهائية (<span class="mono">n ≥ 10</span>)، وتجميع الأدلة الأربعة والورقة البحثية، وتجهيز عرض المناقشة.
+        </p>
+        <div class="mind-branches">
+          <div class="branch-pill">
+            <strong>الدراسة التقييمية (<span class="mono">n ≥ 10</span>)</strong>
+            <p>الاختبار القبلي والبعدي وتحليل اليوميات ولوحة الصدارة الاختيارية.</p>
+          </div>
+          <div class="branch-pill">
+            <strong>الأدلة الأربعة الرسمية</strong>
+            <p>دليل المستخدم، المرجع التقني، دليل الإدارة، ودليل النشر (<span class="mono">25.1</span>).</p>
+          </div>
+          <div class="branch-pill">
+            <strong>الورقة البحثية والعرض</strong>
+            <p>صقل الورقة البحثية والعرض التقديمي وتثبيت لجنة المناقشة (<span class="mono">OI-006</span>).</p>
+          </div>
+        </div>
+        <div class="handoff-tag">📤 تسلّم إلى: بوابة التجميد النهائي (Gate 05)</div>
+      </article>
+
+      <div class="tl-connector gate-conn"><span>↓</span></div>
+
+      <!-- GATE 05 -->
+      <article class="tl-node gate-node">
+        <span class="badge amber mono">GATE 05 · منتصف يونيو 2027 (قبل التسليم بأسبوعين)</span>
+        <div class="tl-title" style="margin-top:4px;">بوابة التجميد النهائي لقوالب المحتوى والسيناريو (<span class="mono">CN-016</span>)</div>
+        <p class="tl-idea" style="margin-bottom:0;">
+          إغلاق كافة التعديلات النصية والتقنية والتفرغ الكامل للبروفات النهائية للعرض أمام لجنة التحكيم.
+        </p>
+      </article>
+
+      <div class="tl-connector"><span>↓</span></div>
+
+      <!-- FINAL TARGET -->
+      <article class="tl-node anchor-node">
+        <span class="badge emerald mono">FINAL RELEASE v1.0 · 07-2027</span>
+        <div class="tl-title" style="margin-top:6px;">المحطة النهائية: التسليم الرسمي ومناقشة مشروع التخرج (يوليو 2027)</div>
+        <p class="tl-idea" style="margin-bottom:0;">
+          تسليم منصة «يوميات سايبر» العاملة + المحتوى العربي + المعامل المعزولة + الأدلة الأربعة + الدراسة التقييمية والورقة البحثية.
+        </p>
+      </article>
+
+    </section>
+
+    <!-- Compact 3 Releases Summary -->
+    <section class="releases-strip">
+      <h3>📌 ملخص محطات الإصدار الثلاث (Target Releases)</h3>
+      <div class="releases-grid">
+        <div class="rel-box">
+          <h4><span class="mono">v0.1 Pilot</span> <span class="badge cyan">فبراير 2027</span></h4>
+          <p>حلقة <span class="mono">Injection</span> متكاملة بالأدوار الـ 3 وعزل Docker وتسجيل الساعات الفعلية.</p>
+        </div>
+        <div class="rel-box">
+          <h4><span class="mono">v0.2 Scale</span> <span class="badge violet">مايو 2027</span></h4>
+          <p>تعميم القالب عبر لوحة الإدارة على الفئات المقررة مع المشرف + أسبوعي التثبيت (<span class="mono">QA</span>).</p>
+        </div>
+        <div class="rel-box">
+          <h4><span class="mono">v1.0 Final</span> <span class="badge emerald">يوليو 2027</span></h4>
+          <p>المنصة النهائية المستقرة، الدراسة الميدانية (<span class="mono">n ≥ 10</span>)، الأدلة الأربعة، والورقة البحثية.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer with Requested Attribution -->
+    <footer class="footer">
+      <div class="prepared-by">
+        تم إعداده بواسطة (<span class="mono">Prepared by</span>): <span>محمد ياسر حسن</span> &amp; <span>محمد أحمد سيد</span>
+      </div>
+      <div class="sub-foot">
+        مشروع يوميات سايبر (Cyber Diaries) — <span class="mono">HEADLESS Team</span> · جامعة أسيوط التكنولوجية الدولية (<span class="mono">EGC TECH AITU</span>) · <span class="mono">CDbHLT-REQ-SPEC-001</span>
+      </div>
+    </footer>
+  </main>
+
+  <button type="button" class="to-top" id="backToTopBtn" title="العودة إلى الأعلى">↑</button>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var viewTimelineBtn = document.getElementById("viewTimelineBtn");
+      var viewMindmapBtn = document.getElementById("viewMindmapBtn");
+      var toggleBranchesBtn = document.getElementById("toggleBranchesBtn");
+      var printRoadmapBtn = document.getElementById("printRoadmapBtn");
+      var backToTopBtn = document.getElementById("backToTopBtn");
+
+      var timelineSection = document.getElementById("timelineSection");
+      var mindmapSection = document.getElementById("mindmapSection");
+      var branchesHidden = false;
+
+      viewTimelineBtn.addEventListener("click", function () {
+        viewTimelineBtn.classList.add("active");
+        viewMindmapBtn.classList.remove("active");
+        timelineSection.style.display = "flex";
+        mindmapSection.classList.remove("active");
+      });
+
+      viewMindmapBtn.addEventListener("click", function () {
+        viewMindmapBtn.classList.add("active");
+        viewTimelineBtn.classList.remove("active");
+        mindmapSection.classList.add("active");
+        timelineSection.style.display = "none";
+      });
+
+      toggleBranchesBtn.addEventListener("click", function () {
+        branchesHidden = !branchesHidden;
+        var allBranches = document.querySelectorAll(".mind-branches");
+        for (var i = 0; i < allBranches.length; i++) {
+          allBranches[i].classList.toggle("hidden", branchesHidden);
+        }
+        toggleBranchesBtn.classList.toggle("active", branchesHidden);
+      });
+
+      printRoadmapBtn.addEventListener("click", function () {
+        window.print();
+      });
+
+      backToTopBtn.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    })();
+  </script>
+</body>
+</html>
