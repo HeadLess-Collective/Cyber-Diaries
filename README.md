@@ -1,8 +1,6 @@
 # Cyber Diaries
 ## Graduation Project Description: An Interactive Arabic Platform for Teaching the Full Lifecycle of Web Application Security Incident Handling
-
 ---
-
 # 0. The Project in One Minute
 
 **Cyber Diaries** is an interactive Arabic learning platform that teaches web application security through a continuous story centered on one main character. The story unfolds across two connected periods in the character’s life. In the **Learning Path**, the main character—provisionally named **Sābir**, subject to change—is shown before beginning his professional career, while he is still learning and building his cybersecurity knowledge. When the user moves to the **Labs Path**, the story advances to the period after the character joins **NoorTech**, a fictional Egyptian electronic-payment company. Workplace incidents begin to occur, and the character’s experience, responsibilities, and relationships develop as the company grows, changes its services, and expands its teams across ten episodes connected to the OWASP Top 10:2025 categories.
