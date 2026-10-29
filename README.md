@@ -1,3 +1,4 @@
+[English](README.md) | [العربية](README.ar.md)
 # Cyber Diaries
 ## Graduation Project Description: An Interactive Arabic Platform for Teaching the Full Lifecycle of Web Application Security Incident Handling
 ---
